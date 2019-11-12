@@ -32,7 +32,7 @@ class Encoder(nn.Module):
                 ('bn_{}'.format(i+1), nn.BatchNorm2d(encode_d_out))
             )
             encoder_layers.append(
-                ('act_{}'.format(i+1), nn.LeakyReLU())
+                ('act_{}'.format(i+1), nn.LeakyReLU(0.2))
             )
 
             encode_d_in = encode_d_out
@@ -40,6 +40,9 @@ class Encoder(nn.Module):
 
         encoder_layers.append(
             ('conv_{}'.format(5), nn.Conv2d(encode_d_in, d_out, 4, 2, 1))
+        )
+        encoder_layers.append(
+            ('bn_{}'.format(5), nn.BatchNorm2d(d_out))
         )
         encoder_layers.append(
             ('act_{}'.format(5), nn.Tanh())
@@ -82,7 +85,7 @@ class Decoder(nn.Module):
                 ('bn_{}'.format(i+1), nn.BatchNorm2d(decode_d_out))
             )
             decode_layers.append(
-                ('act_{}'.format(i+1), nn.LeakyReLU())
+                ('act_{}'.format(i+1), nn.LeakyReLU(0.2))
             )
 
             decode_d_in = decode_d_out
