@@ -80,13 +80,13 @@ def train_main_network(xi_t, xi_tk, xj_tk):
     discr_diff = discriminator(pi_t, pj_tk)
 
     # Compute reconsctruct image
-    pred_xit = decoder(ci_t, pi_t)
+    pred_xitk = decoder(ci_t, pi_tk)
 
     # Similarity loss
     sim_loss = nutils.similarity_loss(ci_t, ci_tk, device=device)
 
     # Reconstruction loss
-    rec_loss = nutils.reconstruction_loss(pred_xit, xi_t, device=device)
+    rec_loss = nutils.reconstruction_loss(pred_xitk, xi_tk, device=device)
 
     # Adversarial loss
     adv_loss = nutils.adversarial_loss(discr_same, discr_diff, device=device)
