@@ -109,7 +109,7 @@ if __name__ == "__main__":
     lr = 0.002
     alpha = 1
     beta = 0.1
-    max_iter = 100
+    max_iter = 200
     save_iters = 5
 
     # Define networks
@@ -124,6 +124,11 @@ if __name__ == "__main__":
 
     discriminator = SceneDiscriminator(d_in=5 * 2 * 2)
     discriminator_optim = optim.Adam(discriminator.parameters(), lr=lr)
+
+    content_encoder.load_state_dict(torch.load('pretrained/iter_50/content_encoder.pth', map_location=device))
+    pose_encoder.load_state_dict(torch.load('pretrained/iter_50/pose_encoder.pth', map_location=device))
+    decoder.load_state_dict(torch.load('pretrained/iter_50/decoder.pth', map_location=device))
+    discriminator.load_state_dict(torch.load('pretrained/iter_50/scene_discriminator.pth', map_location=device))
 
     lstm = LSTM(128+5, 256, 5, batch_size, 2)
 
@@ -145,7 +150,7 @@ if __name__ == "__main__":
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
                                          shuffle=True, num_workers=4)
 
-    for i in range(max_iter):
+    for i in range(50, max_iter):
         content_encoder.train()
         pose_encoder.train()
         decoder.train()
@@ -167,7 +172,9 @@ if __name__ == "__main__":
             rec_loss, sim_loss, adv_loss= train_main_network(xi_t, xi_tk, xj_tk)
 
             # display losses
-            print("%d/%d - discr: %0.3f, rec: %0.3f, sim: %0.3f, adv: %0.3f"%(di, num_data, dis_loss, rec_loss, sim_loss, adv_loss))
+            
+            if di % 20 == 0:
+                print("%d/%d - discr: %0.3f, rec: %0.3f, sim: %0.3f, adv: %0.3f"%(di, num_data, dis_loss, rec_loss, sim_loss, adv_loss))
         
             avg_dis += dis_loss
             avg_sim += sim_loss
