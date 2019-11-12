@@ -15,6 +15,7 @@ from models.lstm import LSTM
 
 import utils as nutils
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def get_value(tensor):
     if tensor is not None:
@@ -51,7 +52,7 @@ def train_scene_discriminator(xi_t, xi_tk, xj_tk):
     pred_same = discriminator(pi_t, pi_tk)
     pred_diff = discriminator(pi_t, pj_tk)
 
-    loss, acc = nutils.discriminator_loss(pred_same, pred_diff)
+    loss, acc = nutils.discriminator_loss(pred_same, pred_diff, device=device)
     loss.backward()
     discriminator_optim.step()
 
@@ -82,13 +83,13 @@ def train_main_network(xi_t, xi_tk, xj_tk):
     pred_xit = decoder(ci_t, pi_t)
 
     # Similarity loss
-    sim_loss = nutils.similarity_loss(ci_t, ci_tk)
+    sim_loss = nutils.similarity_loss(ci_t, ci_tk, device=device)
 
     # Reconstruction loss
-    rec_loss = nutils.reconstruction_loss(pred_xit, xi_t)
+    rec_loss = nutils.reconstruction_loss(pred_xit, xi_t, device=device)
 
     # Adversarial loss
-    adv_loss = nutils.adversarial_loss(discr_same, discr_diff)
+    adv_loss = nutils.adversarial_loss(discr_same, discr_diff, device=device)
 
     # Total loss
     loss = rec_loss + alpha * sim_loss + beta * adv_loss
@@ -126,6 +127,12 @@ if __name__ == "__main__":
 
     lstm = LSTM(128+5, 256, 5, batch_size, 2)
 
+    # Use GPU if available
+    content_encoder = content_encoder.to(device)
+    pose_encoder =  pose_encoder.to(device)
+    decoder = decoder.to(device)
+    discriminator = discriminator.to(device)
+    lstm = lstm.to(device)
 
     dataset = MovingMnist(root_file='../dataset/mnist_test_seq.npy',
                             transform=transforms.Compose([
@@ -148,6 +155,11 @@ if __name__ == "__main__":
 
         num_data = len(dataloader)
         for di, (xi_t, xi_tk, xj_tk) in enumerate(dataloader):
+            # Use GPU if needed
+            xi_t = xi_t.to(device)
+            xi_tk = xi_tk.to(device)
+            xj_tk = xj_tk.to(device)
+
             # train discriminator
             dis_loss, acc = train_scene_discriminator(xi_t, xi_tk, xj_tk)
 
