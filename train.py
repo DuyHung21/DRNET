@@ -127,7 +127,7 @@ if __name__ == "__main__":
     lstm = LSTM(128+5, 256, 5, batch_size, 2)
 
 
-    dataset = MovingMnist(root_file='../../dataset/mnist_test_seq.npy',
+    dataset = MovingMnist(root_file='../dataset/mnist_test_seq.npy',
                             transform=transforms.Compose([
                                 transforms.ToPILImage(),
                                 transforms.Resize(64),
