@@ -1,2 +1,2 @@
 # DRNET
-Implementation of DRNET for video unsupervised learning.
+Pytorch Implementation of DRNET for video unsupervised learning.
