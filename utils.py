@@ -44,7 +44,7 @@ def adversarial_loss(d_same, d_diff, device=torch.device('cpu')):
     """
 
     # First half loss
-    loss_c, _ = discriminator_loss(d_same, d_diff)
+    loss_c, _ = discriminator_loss(d_same, d_diff, device)
     
     # Second half loss
     target_ep = torch.ones(d_same.shape[0], 1, dtype=torch.float) / 2
