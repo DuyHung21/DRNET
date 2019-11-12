@@ -24,8 +24,6 @@ class MovingMnist(Dataset):
         self.transform = transform
         if is_file:
             self.data = np.load(root_file)
-
-        self.data = self.data[:, :100]
     
     def __len__(self):
         return self.data.shape[1]
