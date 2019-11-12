@@ -111,6 +111,7 @@ if __name__ == "__main__":
     beta = 0.1
     max_iter = 200
     save_iters = 5
+    start = 0
 
     # Define networks
     content_encoder = DcGan.Encoder(d_in=1, d_out=128)
@@ -125,10 +126,11 @@ if __name__ == "__main__":
     discriminator = SceneDiscriminator(d_in=5 * 2 * 2)
     discriminator_optim = optim.Adam(discriminator.parameters(), lr=lr)
 
-    content_encoder.load_state_dict(torch.load('pretrained/iter_50/content_encoder.pth', map_location=device))
-    pose_encoder.load_state_dict(torch.load('pretrained/iter_50/pose_encoder.pth', map_location=device))
-    decoder.load_state_dict(torch.load('pretrained/iter_50/decoder.pth', map_location=device))
-    discriminator.load_state_dict(torch.load('pretrained/iter_50/scene_discriminator.pth', map_location=device))
+    # content_encoder.load_state_dict(torch.load('pretrained/iter_50/content_encoder.pth', map_location=device))
+    # pose_encoder.load_state_dict(torch.load('pretrained/iter_50/pose_encoder.pth', map_location=device))
+    # decoder.load_state_dict(torch.load('pretrained/iter_50/decoder.pth', map_location=device))
+    # discriminator.load_state_dict(torch.load('pretrained/iter_50/scene_discriminator.pth', map_location=device))
+    # start = 50
 
     lstm = LSTM(128+5, 256, 5, batch_size, 2)
 
@@ -150,7 +152,7 @@ if __name__ == "__main__":
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
                                          shuffle=True, num_workers=4)
 
-    for i in range(50, max_iter):
+    for i in range(start, max_iter):
         content_encoder.train()
         pose_encoder.train()
         decoder.train()
