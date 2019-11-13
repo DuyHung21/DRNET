@@ -50,7 +50,7 @@ def train_scene_discriminator(xi_t, xi_tk, xj_tk):
 
     # Compute the output of discriminator C
     pred_same = discriminator(pi_t, pi_tk)
-    pred_diff = discriminator(pi_t, pj_tk)
+    pred_diff = discriminator(pi_t, pj_tk).detach()
 
     loss, acc = nutils.discriminator_loss(pred_same, pred_diff, device=device)
     loss.backward()
@@ -66,14 +66,14 @@ def train_main_network(xi_t, xi_tk, xj_tk):
 
     # Compute content vectors of video i
     ci_t = content_encoder(xi_t)
-    ci_tk = content_encoder(xi_tk)
+    ci_tk = content_encoder(xi_tk).detach()
 
     # Compute pose vectors of video i
     pi_t = pose_encoder(xi_t)
-    pi_tk = pose_encoder(xi_tk)
+    pi_tk = pose_encoder(xi_tk).detach()
 
     # Compute pose vector of video j 
-    pj_tk = pose_encoder(xj_tk)
+    pj_tk = pose_encoder(xj_tk).detach()
 
     # Compuse scene discrimination vector
     discr_same = discriminator(pi_t, pi_tk)
