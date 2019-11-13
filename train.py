@@ -175,7 +175,7 @@ if __name__ == "__main__":
 
             # display losses
             
-            if di % 20 == 0:
+            if di % 50 == 0:
                 print("%d/%d - discr: %0.3f, rec: %0.3f, sim: %0.3f, adv: %0.3f"%(di, num_data, dis_loss, rec_loss, sim_loss, adv_loss))
         
             avg_dis += dis_loss
